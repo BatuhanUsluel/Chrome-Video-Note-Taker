@@ -25,6 +25,7 @@ function viewNotes() {
         var categories = ['Math','Youtube'];
 
         for (var i = 0; i<categories.length; i++) {
+            //Create category dropdowns
             var btn = document.createElement("BUTTON");
             btn.classList.add('accordion');
             btn.innerHTML = categories[i];
@@ -34,9 +35,6 @@ function viewNotes() {
             div.classList.add('panel');
 
             var p = document.createElement("p");
-            p.innerHTML = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
-            p.classList.add('categoryTitle');
-            div.appendChild(p);
             mainDiv.appendChild(btn);
             mainDiv.appendChild(div);
 
@@ -53,34 +51,31 @@ function viewNotes() {
                 }
             });
         }
-
-
-        /*
-        <button class="accordion">Section 1</button>
-<div class="panel">
-  <p>Lorem ipsum...</p>
-</div>
-
-<button class="accordion">Section 2</button>
-<div class="panel">
-  <p>Lorem ipsum...</p>
-</div>
-
-<button class="accordion">Section 3</button>
-<div class="panel">
-  <p>Lorem ipsum...</p>
-</div>
-*/
+        //------------------------------------------------------------------//
 
         // get the reference for the body
         var body = document.getElementsByTagName("body")[0];
 
-        // creates a <table> element and a <tbody> element
+        //Tables for categories
+        var tables = [];
+        for (var i = 0; i<categories.length; i++) {
+            // creates a <table> element and a <tbody> element
+            var tbl = document.createElement("table");
+            var tblBody = document.createElement("tbody");
+            // put the <tbody> in the <table>
+            tbl.appendChild(tblBody);
+            tables.push(tbl);
+        }
+
+        //Table for category not present
         var tbl = document.createElement("table");
         var tblBody = document.createElement("tbody");
+        tbl.appendChild(tblBody);
+        tables.push(tbl);
 
         // creating all cells
         for (let i = result.notes.length-1; i >= 0 ; i--) {
+
             // creates a table row
             var row = document.createElement("tr");
             var cellImg = document.createElement("td");
@@ -108,12 +103,22 @@ function viewNotes() {
             row.appendChild(a);
             row.appendChild(cell);
 
-            // add the row to the end of the table body
-            tblBody.appendChild(row);
+            //var category  = result.notes[i].category;
+            var category = "Math"; //FOR TESTING, REMOVE
+            var index = categories.indexOf(category);
+
+            if (index!=-1) {
+                tables[index].appendChild(row);
+            } else {
+                tables[categories.length].appendChild(row);
+            }
         }
 
-        // put the <tbody> in the <table>
-        tbl.appendChild(tblBody);
+        //Go trough every table. Append the table to the corresponding div in buttons
+        for (var i = 0; i<categories.length; i++) {
+            var div = document.getElementsByClassName("panel")[i];
+            div.appendChild(tables[i]);
+        }
 
         var prevTable = document.getElementsByTagName("table")[0];
         prevTable.remove();
