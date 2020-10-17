@@ -11,6 +11,15 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
         return true;
     }
 
+    if (msg.type == "getURL") {
+        sendResponse(getURL());
+    }
+
+    if (msg.type == "setTime") {
+        console.log("going to set time");
+        setTime(msg.time);
+    }
+
     return true;
     }
 );
@@ -61,6 +70,13 @@ function takeNote(request, sendResponse) {
 function getTime() {
     var vid = document.querySelectorAll('video')[0];
     return vid.currentTime;
+}
+
+function setTime(time) {
+    console.log("GOING TO SET TIME FOR THIS TAB");
+    var vid = document.querySelectorAll('video')[0];
+    vid.currentTime = time;
+    return true;
 }
 
 function getURL() {
