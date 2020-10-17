@@ -2,7 +2,7 @@
 
 
 chrome.browserAction.onClicked.addListener(function(tab){
-    chrome.tabs.sendMessage(tab.id,"toggle");
+    chrome.tabs.sendMessage(tab.id, {type: "toggle"});
 });
 
 // Called when the user clicks on the browser action.
