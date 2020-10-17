@@ -20,7 +20,57 @@ function takeNote() {
 function viewNotes() {
     console.log("loading notes");
     chrome.storage.local.get('notes', function (result) {
-        console.log(result.notes)
+        console.log(result.notes);
+        var mainDiv = document.getElementsByTagName("div")[0];
+        var categories = ['Math','Youtube'];
+
+        for (var i = 0; i<categories.length; i++) {
+            var btn = document.createElement("BUTTON");
+            btn.classList.add('accordion');
+            btn.innerHTML = categories[i];
+
+
+            var div = document.createElement("div");
+            div.classList.add('panel');
+
+            var p = document.createElement("p");
+            p.innerHTML = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
+            p.classList.add('categoryTitle');
+            div.appendChild(p);
+            mainDiv.appendChild(btn);
+            mainDiv.appendChild(div);
+
+            btn.addEventListener("click", function() {
+                /* Toggle between adding and removing the "active" class,
+                to highlight the button that controls the panel */
+                this.classList.toggle("active");
+                /* Toggle between hiding and showing the active panel */
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+
+
+        /*
+        <button class="accordion">Section 1</button>
+<div class="panel">
+  <p>Lorem ipsum...</p>
+</div>
+
+<button class="accordion">Section 2</button>
+<div class="panel">
+  <p>Lorem ipsum...</p>
+</div>
+
+<button class="accordion">Section 3</button>
+<div class="panel">
+  <p>Lorem ipsum...</p>
+</div>
+*/
 
         // get the reference for the body
         var body = document.getElementsByTagName("body")[0];
@@ -30,7 +80,7 @@ function viewNotes() {
         var tblBody = document.createElement("tbody");
 
         // creating all cells
-        for (let i = 0; i < result.notes.length; i++) {
+        for (let i = result.notes.length-1; i >= 0 ; i--) {
             // creates a table row
             var row = document.createElement("tr");
             var cellImg = document.createElement("td");
