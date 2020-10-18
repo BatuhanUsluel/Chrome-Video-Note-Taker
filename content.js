@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 
     if (msg.type == "takeNote") {
         console.log("takeNote");
-        takeNote(msg, sendResponse);
+        takeNote2(msg, sendResponse);
         return true;
     }
 
@@ -46,13 +46,14 @@ function toggle(){
     }
 }
 
-function takeNote(request, sendResponse) {
+function takeNote(request, sendResponse, time) {
     console.log("In takenote");
     chrome.storage.local.get({notes: []}, function (result) {
         // the input argument is ALWAYS an object containing the queried keys
         // so we select the key we need
         var notesVar = result.notes;
-        notesVar.push({text: request.note, time: getTime(), url: getURL()});
+        console.log("Adding note with time: " + time);
+        notesVar.push({text: request.note, time: time, url: getURL(), category: request.category});
         // set the new array value to the same key
         chrome.storage.local.set({notes: notesVar}, function () {
             // you can use strings instead of objects
@@ -66,16 +67,38 @@ function takeNote(request, sendResponse) {
     return true;
 }
 
-
-function getTime() {
-    var vid = document.querySelectorAll('video')[0];
-    return vid.currentTime;
+function takeNote2(request, sendResponse) {
+    getTime(request, sendResponse);
 }
 
+function getTime(request, sendResponse) {
+    var vid = document.getElementsByTagName('video')[0];
+    if (typeof vid !== 'undefined') {
+        takeNote(request, sendResponse, vid.currentTime);
+        return true;
+    }
+    chrome.extension.sendMessage({ type : "frames" }, function(response) {
+        console.log("INSIDE CONTENT RETURN DATA:");
+        console.log(response);
+        for (var i = 0; i<response.length; i++) {
+            if (response[i] !== null) {
+                console.log("Returning time");
+                console.log(response[i]);
+                takeNote(request, sendResponse, response[i]);
+                return true;
+            }
+        }
+    });
+}
+
+//Have to do a similar thing with settime by searching iframes. Or can save the iframe of where it is at? But that just adds more complexity probably.
 function setTime(time) {
     console.log("GOING TO SET TIME FOR THIS TAB");
     var vid = document.querySelectorAll('video')[0];
-    vid.currentTime = time;
+    if (typeof vid !== 'undefined') {
+        vid.currentTime = time;
+    }
+    chrome.extension.sendMessage({type:"setTimeIframe", time: time});
     return true;
 }
 
