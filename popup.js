@@ -101,8 +101,8 @@ function viewNotes() {
 
                 var img = document.createElement("img");
                 img.setAttribute("src","play.png");
-                img.style.width = '20%'
-                img.style.height = 'auto'
+                img.style.width = '25px';
+                img.style.height = 'auto';
                 img.onclick = function() {
                     console.log("CLICKED IMAGE");
                     console.log(i);
@@ -111,12 +111,14 @@ function viewNotes() {
 
                 var a = document.createElement('a');
                 a.href = "#";
+                cellImg.appendChild(img);
                 a.appendChild(cellImg);
 
-                cellImg.appendChild(img);
 
+                //cell.append(img);
+                cell.appendChild(a);
                 cell.appendChild(cellText);
-                row.appendChild(a);
+                //row.appendChild(a);
                 row.appendChild(cell);
 
                 var category  = result.notes[i].category;

@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener(
                 function listener(tabId, changeInfo, tab, ran) {
                     // make sure the status is 'complete' and it's the right tab
                     console.log("Ran: " + ran);
-                    if (ran == false && tabId === tab.id && changeInfo.status == 'complete') {
+                    if (ran !== true && tabId === tab.id && changeInfo.status == 'complete') {
                         ran = true;
                         console.log("Ran: " + ran);
                         chrome.tabs.sendMessage(tab.id, {type: "setTime", time: request.time}, function (response) {
