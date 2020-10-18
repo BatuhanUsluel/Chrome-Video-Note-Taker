@@ -91,7 +91,6 @@ function getTime(request, sendResponse) {
     });
 }
 
-//Have to do a similar thing with settime by searching iframes. Or can save the iframe of where it is at? But that just adds more complexity probably.
 function setTime(time) {
     console.log("GOING TO SET TIME FOR THIS TAB");
     var vid = document.querySelectorAll('video')[0];

@@ -181,12 +181,12 @@ function goToVideo(i) {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             var activeTab = tabs[0];
             chrome.tabs.sendMessage(activeTab.id, {type: "getURL"}, function (response) {
-                console.log("CURRENT URL: " + response);
-                console.log("NOTE URL: " + url);
+                chrome.extension.getBackgroundPage().console.log("CURRENT URL: " + response);
+                chrome.extension.getBackgroundPage().console.log("NOTE URL: " + url);
                 if (response===url) {
                     chrome.tabs.sendMessage(activeTab.id, {type: "setTime", time: time});
                 } else {
-                    console.log("calling background");
+                    chrome.extension.getBackgroundPage().console.log("calling background");
                     chrome.runtime.sendMessage({type: "newTab", url: url, time: time});
                 }
             });
