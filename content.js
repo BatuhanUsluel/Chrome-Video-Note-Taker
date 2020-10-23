@@ -1,41 +1,27 @@
+var iframe = document.createElement('iframe');
+setUpSideBar(iframe);
+
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
     console.log(msg);
-    if (msg.type == "toggle") {
-        console.log("toggle");
-        toggle();
+    switch(msg.type) {
+        case "toggle":
+            toggle();
+            break;
+        case "takeNote":
+            takeNote2(msg, sendResponse);
+            break;
+        case "getURL":
+            sendResponse(getURL());
+            break;
+        case "setTime":
+            setTime(msg.time);
+            break;
+        default:
+            console.log("Should not be here");
     }
-
-    if (msg.type == "takeNote") {
-        console.log("takeNote");
-        takeNote2(msg, sendResponse);
-        return true;
-    }
-
-    if (msg.type == "getURL") {
-        sendResponse(getURL());
-    }
-
-    if (msg.type == "setTime") {
-        console.log("going to set time");
-        setTime(msg.time);
-    }
-
     return true;
     }
 );
-
-var iframe = document.createElement('iframe');
-iframe.style.background = "green";
-iframe.style.height = "100%";
-iframe.style.width = "0px";
-iframe.style.position = "fixed";
-iframe.style.top = "0px";
-iframe.style.right = "0px";
-iframe.style.zIndex = "9000000000000000000";
-iframe.frameBorder = "none";
-iframe.src = chrome.extension.getURL("popup.html")
-
-document.body.appendChild(iframe);
 
 function toggle(){
     if(iframe.style.width == "0px"){
@@ -47,7 +33,6 @@ function toggle(){
 }
 
 function takeNote(request, sendResponse, time) {
-    console.log("In takenote");
     chrome.storage.local.get({notes: []}, function (result) {
         // the input argument is ALWAYS an object containing the queried keys
         // so we select the key we need
@@ -78,12 +63,8 @@ function getTime(request, sendResponse) {
         return true;
     }
     chrome.extension.sendMessage({ type : "frames" }, function(response) {
-        console.log("INSIDE CONTENT RETURN DATA:");
-        console.log(response);
         for (var i = 0; i<response.length; i++) {
             if (response[i] !== null) {
-                console.log("Returning time");
-                console.log(response[i]);
                 takeNote(request, sendResponse, response[i]);
                 return true;
             }
@@ -92,7 +73,6 @@ function getTime(request, sendResponse) {
 }
 
 function setTime(time) {
-    console.log("GOING TO SET TIME FOR THIS TAB");
     var vid = document.querySelectorAll('video')[0];
     if (typeof vid !== 'undefined') {
         vid.currentTime = time;
@@ -103,4 +83,19 @@ function setTime(time) {
 
 function getURL() {
     return location.href;
+}
+
+function setUpSideBar(iframe) {
+
+    iframe.style.background = "green";
+    iframe.style.height = "100%";
+    iframe.style.width = "0px";
+    iframe.style.position = "fixed";
+    iframe.style.top = "0px";
+    iframe.style.right = "0px";
+    iframe.style.zIndex = "9000000000000000000";
+    iframe.frameBorder = "none";
+    iframe.src = chrome.extension.getURL("popup.html")
+
+    document.body.appendChild(iframe);
 }
