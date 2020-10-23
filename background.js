@@ -9,21 +9,7 @@ chrome.runtime.onMessage.addListener(
         console.log("in background");
         if(request.type == "newTab" ) {
             console.log("in new tab");
-            chrome.tabs.create({'url': request.url}, function (tab) {
-                let ran = false;
-                function listener(tabId, changeInfo, tab, ran) {
-                    // make sure the status is 'complete' and it's the right tab
-                    console.log("Ran: " + ran);
-                    if (ran !== true && tabId === tab.id && changeInfo.status == 'complete') {
-                        ran = true;
-                        console.log("Ran: " + ran);
-                        chrome.tabs.sendMessage(tab.id, {type: "setTime", time: request.time}, function (response) {
-                            console.log("set time!");
-                        });
-                    }
-                };
-                chrome.tabs.onUpdated.addListener(listener);
-            });
+            createTab(request.url);
         } else if (request.type == "frames") {
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                 chrome.tabs.executeScript({file: 'iframescript.js', allFrames: true}, function (results) {
@@ -40,3 +26,16 @@ chrome.runtime.onMessage.addListener(
         return true;
     }
 );
+
+function createTab (url) {
+    return new Promise(resolve => {
+        chrome.tabs.create({url}, async tab => {
+            chrome.tabs.onUpdated.addListener(function listener (tabId, info) {
+                if (info.status === 'complete' && tabId === tab.id) {
+                    chrome.tabs.onUpdated.removeListener(listener);
+                    resolve(tab);
+                }
+            });
+        });
+    });
+}
