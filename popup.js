@@ -16,7 +16,9 @@ function takeNote() {
         var e = document.getElementById("Categories");
         var category = e.options[e.selectedIndex].text;
         chrome.tabs.sendMessage(activeTab.id, {type: "takeNote", note: document.getElementById("noteTextArea").value, category: category}, function (response) {
-            console.log(response);
+            if (response === "noVid") {
+                alert('No video found on this page!');
+            }
             document.getElementById("noteTextArea").value = "";
             viewNotes();
         });

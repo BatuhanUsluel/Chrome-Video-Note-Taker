@@ -8,7 +8,7 @@
   "content_scripts": [
     {
       "matches": [
-        "<all_urls>"
+        "*://*/*"
       ],
       "js": ["jquery-3.5.1.min.js", "content.js"]
     }
@@ -18,10 +18,7 @@
   },
   "permissions": [
     "activeTab",
-    "storage",
-    "tabs",
-    "<all_urls>",
-    "webNavigation"
+    "storage"
   ],
   "web_accessible_resources": ["popup.html"]
 }

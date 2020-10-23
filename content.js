@@ -70,6 +70,7 @@ function getTime(request, sendResponse) {
             }
         }
     });
+    sendResponse("noVid");
 }
 
 function setTime(time) {
